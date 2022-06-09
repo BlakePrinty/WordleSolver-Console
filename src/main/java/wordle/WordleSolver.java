@@ -25,7 +25,6 @@ public class WordleSolver {
 
         String wordToGuess = generateRandomWord(masterWordleList);
         System.out.println(wordToGuess);
-        //String wordToGuess = "MONTH";
         String currGuess = "";
         String guessColors;
         int guessCount = 0;
@@ -42,8 +41,22 @@ public class WordleSolver {
 
             // Update the letters and remove the words that are impossible
             updateLetters(guessColors, blackLetters, yellowLetters, greenLettersLocations, currGuess, wordToGuess);
-            updatePossibleWordsList(possibleWords, currGuess, guessColors, greenLettersLocations, yellowLetters, blackLetters);
-            displayRemainingWords(possibleWords);
+
+            System.out.println("\nBlack Letters:");
+            for (Character letter : blackLetters) {
+                System.out.println(letter);
+            }
+            System.out.println("\nYellow Letters:");
+            for (Character letter : yellowLetters) {
+                System.out.println(letter);
+            }
+            System.out.println("\nGreen Letters:");
+            for (int i = 1; i < greenLettersLocations.size()+1; i++) {
+                System.out.println(greenLettersLocations.get(i));
+            }
+
+            //updatePossibleWordsList(possibleWords, currGuess, guessColors, greenLettersLocations, yellowLetters, blackLetters);
+            //displayRemainingWords(possibleWords);
         }
     }
 
@@ -78,24 +91,6 @@ public class WordleSolver {
     }
 
     public static void updatePossibleWordsList(ArrayList<String> possibleWords, String currGuess, String colorCodes, HashMap<Integer, Character> greenLetters, ArrayList<Character> yellowLetters, ArrayList<Character> blackLetters) {
-        // Start by eliminating every word that contains letters that are blacked out
-        for (String word : possibleWords) {
-            // Iterating through each word in possibleWords
-            for (Character letter : blackLetters) {
-                // Iterating through each letter in blackLetters
-                if (containsLetter(word, letter)) {
-                    // Delete the word from possibleWords
-                    possibleWords.remove(word);
-                }
-            }
-            for (Character letter : yellowLetters) {
-                // Iterating through each letter in yellow letters
-                if (!containsLetter(word, letter)) {
-                    // Delete the word from possibleWords
-                    possibleWords.remove(word);
-                }
-            }
-        }
 
     }
 
@@ -109,8 +104,7 @@ public class WordleSolver {
     public static void updateLetters(String colorCodes, ArrayList<Character> blackLetters, ArrayList<Character> yellowLetters, HashMap<Integer, Character> greenLetters, String guess, String wordToGuess) {
         for (int i = 0; i < colorCodes.length(); i++) {
             if (colorCodes.charAt(i) == 'G') {
-                // WORK ON THIS
-                greenLetters.put(i, guess.charAt(i));
+                greenLetters.put(i+1, guess.charAt(i));
             } else if (colorCodes.charAt(i) == 'Y') {
                 yellowLetters.add(guess.charAt(i));
             } else if (colorCodes.charAt(i) == 'B') {
