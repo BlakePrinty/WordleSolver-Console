@@ -1,5 +1,6 @@
 package wordle;
 
+import javax.naming.AuthenticationNotSupportedException;
 import java.util.*;
 
 public class WordleSolver {
@@ -44,19 +45,22 @@ public class WordleSolver {
 
             System.out.println("\nBlack Letters:");
             for (Character letter : blackLetters) {
-                System.out.println(letter);
+                System.out.print(letter + " ");
             }
-            System.out.println("\nYellow Letters:");
+            System.out.println();
+            System.out.println("Yellow Letters:");
             for (Character letter : yellowLetters) {
-                System.out.println(letter);
+                System.out.print(letter + " ");
             }
-            System.out.println("\nGreen Letters:");
+            System.out.println();
+            System.out.println("Green Letters:");
             for (int i = 1; i < greenLettersLocations.size()+1; i++) {
-                System.out.println(greenLettersLocations.get(i));
+                System.out.print(greenLettersLocations.get(i));
             }
+            System.out.println();
 
-            //updatePossibleWordsList(possibleWords, currGuess, guessColors, greenLettersLocations, yellowLetters, blackLetters);
-            //displayRemainingWords(possibleWords);
+            possibleWords = updatePossibleWordsList(possibleWords, wordToGuess, currGuess, guessColors, greenLettersLocations, yellowLetters, blackLetters);
+            displayRemainingWords(possibleWords);
         }
     }
 
@@ -90,8 +94,16 @@ public class WordleSolver {
         return Objects.equals(currGuess, wordToGuess);
     }
 
-    public static void updatePossibleWordsList(ArrayList<String> possibleWords, String currGuess, String colorCodes, HashMap<Integer, Character> greenLetters, ArrayList<Character> yellowLetters, ArrayList<Character> blackLetters) {
-
+    public static ArrayList<String> updatePossibleWordsList(ArrayList<String> possibleWords, String wordToGuess, String currGuess, String colorCodes, HashMap<Integer, Character> greenLetters, ArrayList<Character> yellowLetters, ArrayList<Character> blackLetters) {
+        ArrayList<String> usableWords = new ArrayList<>();
+        // Remove the words that contain the black letters
+        for (String word : possibleWords) {
+            if (!containsLetter(word, blackLetters.get(0))) {
+                //System.out.println("X " + word);
+                usableWords.add(word);
+            }
+        }
+        return usableWords;
     }
 
     public static boolean containsLetter(String word, char letter) {
