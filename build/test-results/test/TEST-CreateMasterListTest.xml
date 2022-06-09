@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="CreateMasterListTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2022-06-09T15:18:45" hostname="DESKTOP-QRD2I3U" time="0.039">
+  <properties/>
+  <testcase name="successfullyLoadsFile()" classname="CreateMasterListTest" time="0.039"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
