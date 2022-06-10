@@ -5,22 +5,19 @@ import java.util.*;
 public class WordleSolver {
     public static void main(String[] args) {
         ArrayList<String> possibleWords = new ArrayList<>();
+        ArrayList<Character> yellowLetters = new ArrayList<>();
+        ArrayList<Character> blackLetters = new ArrayList<>();
+        HashMap<Integer, Character> greenLettersLocations = new HashMap<>();
+
         CreateMasterList newGame = new CreateMasterList(possibleWords);
         Scanner input = new Scanner(System.in);
 
-        // Read the file to create the master word list
         newGame.readFile();
         possibleWords = newGame.getMasterWordList();
-        // Where the green letters appear
-        HashMap<Integer, Character> greenLettersLocations = new HashMap<>();
-        ArrayList<Character> yellowLetters = new ArrayList<>();
-        ArrayList<Character> blackLetters = new ArrayList<>();
 
-        greenLettersLocations.put(1, '?');
-        greenLettersLocations.put(2, '?');
-        greenLettersLocations.put(3, '?');
-        greenLettersLocations.put(4, '?');
-        greenLettersLocations.put(5, '?');
+        for (int i = 1; i < 6; i++) {
+            greenLettersLocations.put(i, '?');
+        }
 
         String wordToGuess = generateRandomWord(possibleWords);
         System.out.println(wordToGuess);
@@ -29,40 +26,27 @@ public class WordleSolver {
         int guessCount = 0;
 
         while (!isGameOver(currGuess, wordToGuess, guessCount)) {
-            // Will continue while the user has not guessed the word or ran out of guesses
             System.out.println("Enter your guess:");
             currGuess = input.nextLine();
 
-            showColors(currGuess, wordToGuess);
+            guessColors = String.valueOf(showColors(currGuess, wordToGuess));
 
-            System.out.println("\nEnter the color codes (GGBBY):");
-            guessColors = input.nextLine();
+//            System.out.println("\nEnter the color codes (GGBBY):");
+//            guessColors = input.nextLine();
 
-            // Update the letters and remove the words that are impossible
             updateLetters(guessColors, blackLetters, yellowLetters, greenLettersLocations, currGuess);
-
-
-//
-//            System.out.println("\nBlack Letters:");
-//            for (Character letter : blackLetters) {
-//                System.out.print(letter + " ");
-//            }
-//            System.out.println();
-//            System.out.println("Yellow Letters:");
-//            for (Character letter : yellowLetters) {
-//                System.out.print(letter + " ");
-//            }
-//            System.out.println();
-//            System.out.println("Green Letters:");
-//            for (int i = 1; i < greenLettersLocations.size()+1; i++) {
-//                System.out.print(greenLettersLocations.get(i));
-//            }
-//            System.out.println();
 
             possibleWords = updatePossibleWordsList(possibleWords, blackLetters);
             displayRemainingWords(possibleWords);
 
             displayLetterStatuses(blackLetters, yellowLetters, greenLettersLocations);
+        }
+
+        System.out.println();
+        if (Objects.equals(currGuess, wordToGuess)) {
+            System.out.println(ANSI_WHITE_BACKGROUND + ANSI_GREEN + "SOLVED!" + ANSI_RESET);
+        } else {
+            System.out.println(ANSI_WHITE_BACKGROUND + ANSI_RED + "WRONG!" + ANSI_RESET);
         }
     }
 
@@ -86,8 +70,7 @@ public class WordleSolver {
         System.out.println();
     }
 
-    // NOT WORKING PROPERLY FOR SOME REASON
-    public static void showColors(String guess, String wordToGuess) {
+    public static StringBuilder showColors(String guess, String wordToGuess) {
         StringBuilder buildString = new StringBuilder();
 
         for (int i = 0; i < wordToGuess.length(); i++) {
@@ -99,7 +82,7 @@ public class WordleSolver {
                 buildString.append('G');
             }
         }
-        System.out.println(buildString);
+        return buildString;
     }
 
     public static String generateRandomWord(ArrayList<String> masterWordleList) {
@@ -108,20 +91,19 @@ public class WordleSolver {
     }
 
     public static boolean isGameOver(String currGuess, String wordToGuess, int guessCount) {
-        // If the user ran out of attempts
         if (guessCount >= 6) {
             return true;
         }
-        // If the user guesses the word or not
         return Objects.equals(currGuess, wordToGuess);
     }
 
     public static ArrayList<String> updatePossibleWordsList(ArrayList<String> possibleWords, ArrayList<Character> blackLetters) {
+
+        // Needs to be re-written recursively
+
         ArrayList<String> usableWords = new ArrayList<>();
-        // Remove the words that contain the black letters
         for (String word : possibleWords) {
             if (!containsLetter(word, blackLetters.get(0))) {
-                //System.out.println("X " + word);
                 usableWords.add(word);
             }
         }
@@ -136,12 +118,13 @@ public class WordleSolver {
     }
 
     public static void updateLetters(String colorCodes, ArrayList<Character> blackLetters, ArrayList<Character> yellowLetters, HashMap<Integer, Character> greenLetters, String guess) {
+        // Need to add a way for words with multiple occurrences of the same letter
         for (int i = 0; i < colorCodes.length(); i++) {
             if (colorCodes.charAt(i) == 'G') {
                 greenLetters.put(i+1, guess.charAt(i));
-            } else if (colorCodes.charAt(i) == 'Y') {
+            } else if (colorCodes.charAt(i) == 'Y' && !yellowLetters.contains(guess.charAt(i))) {
                 yellowLetters.add(guess.charAt(i));
-            } else if (colorCodes.charAt(i) == 'B') {
+            } else if (colorCodes.charAt(i) == 'B' && !blackLetters.contains(guess.charAt(i))) {
                 blackLetters.add(guess.charAt(i));
             }
         }
@@ -154,8 +137,6 @@ public class WordleSolver {
         }
         System.out.println();
     }
-
-
 
     // Text Colors
     public static final String ANSI_RESET = "\u001B[0m";
@@ -177,6 +158,4 @@ public class WordleSolver {
     public static final String ANSI_PURPLE_BACKGROUND = "\u001B[45m";
     public static final String ANSI_CYAN_BACKGROUND = "\u001B[46m";
     public static final String ANSI_WHITE_BACKGROUND = "\u001B[47m";
-
-
 }
