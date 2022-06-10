@@ -5,12 +5,12 @@ import java.util.*;
 public class WordleSolver {
     public static void main(String[] args) {
         ArrayList<String> possibleWords = new ArrayList<>();
-        CreateMasterList test = new CreateMasterList(possibleWords);
+        CreateMasterList newGame = new CreateMasterList(possibleWords);
         Scanner input = new Scanner(System.in);
 
         // Read the file to create the master word list
-        test.readFile();
-        possibleWords = test.getMasterWordList();
+        newGame.readFile();
+        possibleWords = newGame.getMasterWordList();
         // Where the green letters appear
         HashMap<Integer, Character> greenLettersLocations = new HashMap<>();
         ArrayList<Character> yellowLetters = new ArrayList<>();
