@@ -1,6 +1,5 @@
 package wordle;
 
-import javax.naming.AuthenticationNotSupportedException;
 import java.util.*;
 
 public class WordleSolver {
@@ -40,7 +39,7 @@ public class WordleSolver {
             guessColors = input.nextLine();
 
             // Update the letters and remove the words that are impossible
-            updateLetters(guessColors, blackLetters, yellowLetters, greenLettersLocations, currGuess, wordToGuess);
+            updateLetters(guessColors, blackLetters, yellowLetters, greenLettersLocations, currGuess);
 
             System.out.println("\nBlack Letters:");
             for (Character letter : blackLetters) {
@@ -58,22 +57,22 @@ public class WordleSolver {
             }
             System.out.println();
 
-            possibleWords = updatePossibleWordsList(possibleWords, wordToGuess, currGuess, guessColors, greenLettersLocations, yellowLetters, blackLetters);
+            possibleWords = updatePossibleWordsList(possibleWords, blackLetters);
             displayRemainingWords(possibleWords);
         }
     }
 
     // NOT WORKING PROPERLY FOR SOME REASON
     public static void showColors(String guess, String wordToGuess) {
-        String buildString = "";
+        StringBuilder buildString = new StringBuilder();
 
         for (int i = 0; i < wordToGuess.length(); i++) {
             if (containsLetter(wordToGuess, guess.charAt(i)) && wordToGuess.charAt(i) != guess.charAt(i)) {
-                buildString += 'Y';
+                buildString.append('Y');
             } else if (!containsLetter(wordToGuess, guess.charAt(i))) {
-                buildString += 'B';
+                buildString.append('B');
             } else {
-                buildString += 'G';
+                buildString.append('G');
             }
         }
         System.out.println(buildString);
@@ -93,7 +92,7 @@ public class WordleSolver {
         return Objects.equals(currGuess, wordToGuess);
     }
 
-    public static ArrayList<String> updatePossibleWordsList(ArrayList<String> possibleWords, String wordToGuess, String currGuess, String colorCodes, HashMap<Integer, Character> greenLetters, ArrayList<Character> yellowLetters, ArrayList<Character> blackLetters) {
+    public static ArrayList<String> updatePossibleWordsList(ArrayList<String> possibleWords, ArrayList<Character> blackLetters) {
         ArrayList<String> usableWords = new ArrayList<>();
         // Remove the words that contain the black letters
         for (String word : possibleWords) {
@@ -112,7 +111,7 @@ public class WordleSolver {
         return word.charAt(0) == letter || containsLetter(word.substring(1), letter);
     }
 
-    public static void updateLetters(String colorCodes, ArrayList<Character> blackLetters, ArrayList<Character> yellowLetters, HashMap<Integer, Character> greenLetters, String guess, String wordToGuess) {
+    public static void updateLetters(String colorCodes, ArrayList<Character> blackLetters, ArrayList<Character> yellowLetters, HashMap<Integer, Character> greenLetters, String guess) {
         for (int i = 0; i < colorCodes.length(); i++) {
             if (colorCodes.charAt(i) == 'G') {
                 greenLetters.put(i+1, guess.charAt(i));
