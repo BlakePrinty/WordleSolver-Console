@@ -33,7 +33,13 @@ public class WordleSolver {
 
             updateLetters(guessColors, blackLetters, yellowLetters, greenLettersLocations, currGuess);
 
-            possibleWords = updatePossibleWordsList(0, possibleWords, blackLetters);
+            for (int i = 0; i < blackLetters.size(); i++) {
+                possibleWords = updatePossibleWordsList(i, possibleWords, blackLetters);
+            }
+
+            System.out.println(possibleWords.size() + " choices...");
+
+            //possibleWords = updatePossibleWordsList(0, possibleWords, blackLetters);
             displayRemainingWords(possibleWords);
 
             displayLetterStatuses(blackLetters, yellowLetters, greenLettersLocations);
@@ -95,28 +101,15 @@ public class WordleSolver {
     }
 
     public static ArrayList<String> updatePossibleWordsList(int curPos, ArrayList<String> possibleWords, ArrayList<Character> blackLetters) {
+
         ArrayList<String> usableWords = new ArrayList<>();
 
-        if (curPos < blackLetters.size()) {
-            for (String word : possibleWords) {
-                if (!containsLetter(word, blackLetters.get(curPos))) {
-                    usableWords.add(word);
-                }
+        for (String word : possibleWords) {
+            if (!containsLetter(word, blackLetters.get(curPos))) {
+                usableWords.add(word);
             }
-
-            return updatePossibleWordsList(curPos+1, usableWords, blackLetters);
-        } else {
-            return usableWords;
         }
-//
-//        ArrayList<String> usableWords = new ArrayList<>();
-//
-//        for (String word : possibleWords) {
-//            if (!containsLetter(word, blackLetters.get(0))) {
-//                usableWords.add(word);
-//            }
-//        }
-//        return usableWords;
+        return usableWords;
     }
 
     public static boolean containsLetter(String word, char letter) {
