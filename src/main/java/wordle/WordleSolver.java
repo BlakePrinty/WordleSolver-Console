@@ -38,7 +38,6 @@ public class WordleSolver {
             }
 
             System.out.println(possibleWords.size() + " choices...");
-
             displayRemainingWords(possibleWords);
             displayLetterStatuses(blackLetters, yellowLetters, greenLettersLocations);
         }
