@@ -31,12 +31,9 @@ public class WordleSolver {
 
             guessColors = String.valueOf(showColors(currGuess, wordToGuess));
 
-//            System.out.println("\nEnter the color codes (GGBBY):");
-//            guessColors = input.nextLine();
-
             updateLetters(guessColors, blackLetters, yellowLetters, greenLettersLocations, currGuess);
 
-            possibleWords = updatePossibleWordsList(possibleWords, blackLetters);
+            possibleWords = updatePossibleWordsList(0, possibleWords, blackLetters);
             displayRemainingWords(possibleWords);
 
             displayLetterStatuses(blackLetters, yellowLetters, greenLettersLocations);
@@ -97,17 +94,29 @@ public class WordleSolver {
         return Objects.equals(currGuess, wordToGuess);
     }
 
-    public static ArrayList<String> updatePossibleWordsList(ArrayList<String> possibleWords, ArrayList<Character> blackLetters) {
-
-        // Needs to be re-written recursively
-
+    public static ArrayList<String> updatePossibleWordsList(int curPos, ArrayList<String> possibleWords, ArrayList<Character> blackLetters) {
         ArrayList<String> usableWords = new ArrayList<>();
-        for (String word : possibleWords) {
-            if (!containsLetter(word, blackLetters.get(0))) {
-                usableWords.add(word);
+
+        if (curPos < blackLetters.size()) {
+            for (String word : possibleWords) {
+                if (!containsLetter(word, blackLetters.get(curPos))) {
+                    usableWords.add(word);
+                }
             }
+
+            return updatePossibleWordsList(curPos+1, usableWords, blackLetters);
+        } else {
+            return usableWords;
         }
-        return usableWords;
+//
+//        ArrayList<String> usableWords = new ArrayList<>();
+//
+//        for (String word : possibleWords) {
+//            if (!containsLetter(word, blackLetters.get(0))) {
+//                usableWords.add(word);
+//            }
+//        }
+//        return usableWords;
     }
 
     public static boolean containsLetter(String word, char letter) {
