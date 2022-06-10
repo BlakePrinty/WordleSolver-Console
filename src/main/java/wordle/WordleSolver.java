@@ -5,14 +5,13 @@ import java.util.*;
 
 public class WordleSolver {
     public static void main(String[] args) {
-        ArrayList<String> masterWordleList = new ArrayList<>();
-        CreateMasterList test = new CreateMasterList(masterWordleList);
+        ArrayList<String> possibleWords = new ArrayList<>();
+        CreateMasterList test = new CreateMasterList(possibleWords);
         Scanner input = new Scanner(System.in);
 
         // Read the file to create the master word list
         test.readFile();
-        masterWordleList = test.getMasterWordList();
-        ArrayList<String> possibleWords = masterWordleList;
+        possibleWords = test.getMasterWordList();
         // Where the green letters appear
         HashMap<Integer, Character> greenLettersLocations = new HashMap<>();
         ArrayList<Character> yellowLetters = new ArrayList<>();
@@ -24,7 +23,7 @@ public class WordleSolver {
         greenLettersLocations.put(4, '?');
         greenLettersLocations.put(5, '?');
 
-        String wordToGuess = generateRandomWord(masterWordleList);
+        String wordToGuess = generateRandomWord(possibleWords);
         System.out.println(wordToGuess);
         String currGuess = "";
         String guessColors;
