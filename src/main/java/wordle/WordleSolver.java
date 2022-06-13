@@ -8,6 +8,7 @@ public class WordleSolver {
         ArrayList<Character> yellowLetters = new ArrayList<>();
         ArrayList<Character> blackLetters = new ArrayList<>();
         HashMap<Integer, Character> greenLettersLocations = new HashMap<>();
+        ArrayList<String> guesses = new ArrayList<>();
 
         CreateMasterList newGame = new CreateMasterList(possibleWords);
         Scanner input = new Scanner(System.in);
@@ -20,7 +21,6 @@ public class WordleSolver {
         }
 
         String wordToGuess = generateRandomWord(possibleWords);
-        System.out.println(wordToGuess);
         String currGuess = "";
         String guessColors;
         int guessCount = 0;
@@ -29,17 +29,28 @@ public class WordleSolver {
             System.out.println("Enter your guess:");
             currGuess = input.nextLine();
 
+            guesses.add(currGuess);
+
             guessColors = String.valueOf(showColors(currGuess, wordToGuess));
 
             updateLetters(guessColors, blackLetters, yellowLetters, greenLettersLocations, currGuess);
 
             for (int i = 0; i < blackLetters.size(); i++) {
-                possibleWords = updatePossibleWordsList(i, possibleWords, blackLetters);
+                possibleWords = updatePossibleWordsListBlack(i, possibleWords, blackLetters);
+            }
+            for (int i = 0; i < yellowLetters.size(); i++) {
+                possibleWords = updatePossibleWordsListYellow(i, possibleWords, yellowLetters);
             }
 
-            System.out.println(possibleWords.size() + " choices...");
+            System.out.print(possibleWords.size() + " choice");
+            if (possibleWords.size() > 1) {
+                System.out.print("s");
+            }
+            System.out.println("...");
+
+            //System.out.println(possibleWords.size() + " choices...");
             displayRemainingWords(possibleWords);
-            displayLetterStatuses(blackLetters, yellowLetters, greenLettersLocations);
+            displayLetterStatuses(guesses, blackLetters, yellowLetters, greenLettersLocations);
         }
 
         System.out.println();
@@ -50,7 +61,7 @@ public class WordleSolver {
         }
     }
 
-    public static void displayLetterStatuses(ArrayList<Character> blackLetters, ArrayList<Character> yellowLetters, HashMap<Integer, Character> greenLetters) {
+    public static void displayLetterStatuses(ArrayList<String> guesses, ArrayList<Character> blackLetters, ArrayList<Character> yellowLetters, HashMap<Integer, Character> greenLetters) {
         System.out.println(ANSI_BLACK_BACKGROUND + ANSI_YELLOW + "Yellow Letters:" + ANSI_RESET);
         for (Character letter : yellowLetters) {
             System.out.print(ANSI_YELLOW + letter + " " + ANSI_RESET);
@@ -63,11 +74,28 @@ public class WordleSolver {
         }
         System.out.println();
 
-        System.out.println(ANSI_BLACK_BACKGROUND + ANSI_GREEN + "Previous Guess:" + ANSI_RESET);
+        System.out.println(ANSI_BLACK_BACKGROUND + ANSI_GREEN + "Green Letters:" + ANSI_RESET);
         for (int i = 1; i < greenLetters.size()+1; i++) {
             System.out.print(ANSI_GREEN + greenLetters.get(i) + ANSI_RESET);
         }
         System.out.println();
+
+        System.out.println(ANSI_BLACK_BACKGROUND + ANSI_PURPLE + "Previous guesses:" + ANSI_RESET);
+        for (String guess : guesses) {
+            for (int i = 0; i < guess.length(); i++) {
+                if (greenLetters.get(i+1) == guess.charAt(i)) {
+                    System.out.print(ANSI_GREEN + guess.charAt(i) + ANSI_RESET);
+                } else if (blackLetters.contains(guess.charAt(i))) {
+                    System.out.print(ANSI_BLACK + guess.charAt(i) + ANSI_RESET);
+                } else if (yellowLetters.contains(guess.charAt(i))) {
+                    System.out.print(ANSI_YELLOW + guess.charAt(i) + ANSI_RESET);
+                } else {
+                    System.out.print(ANSI_GREEN + guess.charAt(i) + ANSI_RESET);
+                }
+            }
+            System.out.println();
+        }
+
     }
 
     public static StringBuilder showColors(String guess, String wordToGuess) {
@@ -97,12 +125,22 @@ public class WordleSolver {
         return Objects.equals(currGuess, wordToGuess);
     }
 
-    public static ArrayList<String> updatePossibleWordsList(int curPos, ArrayList<String> possibleWords, ArrayList<Character> blackLetters) {
-
+    public static ArrayList<String> updatePossibleWordsListBlack(int curPos, ArrayList<String> possibleWords, ArrayList<Character> blackLetters) {
         ArrayList<String> usableWords = new ArrayList<>();
 
         for (String word : possibleWords) {
             if (!containsLetter(word, blackLetters.get(curPos))) {
+                usableWords.add(word);
+            }
+        }
+        return usableWords;
+    }
+
+    public static ArrayList<String> updatePossibleWordsListYellow(int curPos, ArrayList<String> possibleWords, ArrayList<Character> yellowLetters) {
+        ArrayList<String> usableWords = new ArrayList<>();
+
+        for (String word : possibleWords) {
+            if (containsLetter(word, yellowLetters.get(curPos))) {
                 usableWords.add(word);
             }
         }
